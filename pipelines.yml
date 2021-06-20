@@ -78,5 +78,6 @@ pipelines:
         configuration:
           inputSteps:
             - name: publish_go_binary
+            - name: publish_go_binary_win
           outputResources:
             - name: go_buildinfo
