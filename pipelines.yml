@@ -23,7 +23,7 @@ pipelines:
   - name: go_build_pipeline_example
     steps:
       # Build the Go sample app from the GitRepo. Docs at https://www.jfrog.com/confluence/display/JFROG/GoBuild
-      - name: build_go
+      - name: build_go_win
         type: GoBuild
         configuration:
           sourceLocation: .
@@ -32,6 +32,31 @@ pipelines:
           environmentVariables:
             GOOS: windows
             GOARCH: amd64
+          outputFile: build_go.exe
+          inputResources:
+            - name: go_repo
+          integrations:
+            - name: {{ .Values.artifactory }}
+
+      # Publish the Go sample app binary to Artifactory. Docs at https://www.jfrog.com/confluence/display/JFROG/GoPublishBinary
+      - name: publish_go_binary
+        type: GoPublishBinary
+        configuration:
+          inputSteps:
+            - name: build_go_win
+          targetRepository: go-local
+          integrations:
+            - name: {{ .Values.artifactory }}
+                 
+      - name: build_go
+        type: GoBuild
+        configuration:
+          sourceLocation: .
+          resolverRepo: go-virtual
+          noRegistry: true
+          environmentVariables:
+            GOOS: windows
+            GOARCH: amd64         
           inputResources:
             - name: go_repo
           integrations:
