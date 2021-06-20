@@ -29,6 +29,9 @@ pipelines:
           sourceLocation: .
           resolverRepo: go-virtual
           noRegistry: true
+          environmentVariables:
+            GOOS: windows
+            GOARCH: amd64
           inputResources:
             - name: go_repo
           integrations:
